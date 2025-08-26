@@ -2,7 +2,7 @@
 # This script calculates formulae for RS in single attempt
 # and several attemps scenarios
 # Script started 4/8/2025
-# Last updated 8/20/2025
+# Last updated 8/25/2025
 
 # Import modules
 source("analysis.R")
@@ -20,16 +20,18 @@ source("regression_models_single.R")
 load_libraries()
 
 # Load datasets
-dataset <- load_datasets(filepath)
+dataset_list <- load_datasets(filepath, filepath_gwet)
 
 # Assign datasets to variables
-datasets <- create_datasets(dataset)
+datasets <- create_datasets(dataset_list)
 df_sa <- datasets[[1]]
 df_ua <- datasets[[2]]
+df_gwet <- datasets[[3]]
 
 View(dataset)
 View(df_sa)
 View(df_ua)
+View(df_gwet)
 
 ###############################################################################
 ##################### Run power calculation ###################################
@@ -49,7 +51,7 @@ cat(sprintf("Effect size is: %.15f\n", effect_size))
 cat("Group size is: ", power_calculation, "\n")
 
 ###############################################################################
-########### Quick regression on standing and m_cgs ############################
+########### Quick regression on time to stand and m_cgs #######################
 ###############################################################################
 
 # This is a quick regression to check the relationship between standing
@@ -72,7 +74,17 @@ ggsave("lm_m_cgs_standing.jpeg", plot = last_plot(),
        device = "jpeg",
        width = 8, height = 6, dpi = 300)
 
-# Residual Plot
+###############################################################################
+########################### Gwet's AC1 CGS ####################################
+###############################################################################
+# Gwet's coefficient of agreement
+# acceptable interobserver agreement AC1 > 0.80
+ac1 <- gwet.ac1.raw(df_gwet)$est
+ac1
+
+###############################################################################
+############################# Residual Plot ###################################
+###############################################################################
 # Plot the residuals against the fitted values
 # This helps you check for:
 # **Homoscedasticity**:
@@ -131,16 +143,12 @@ poly_model_sa <- create_polynomial_model(df_sa, degree, predictors_sa)
 poly_model_sa_2axes <- create_polynomial_model(df_sa, degree,
                                                predictors_sa_2axes)
 
-
-
 # Analyse Residuals
 analysis <- residuals_analysis(poly_model_sa)
 analysis[[1]]
 analysis[[2]]
 analysis[[3]]
 analysis[[4]]
-
-
 
 # Compare models
 comparison <- compare_models(sa_slr, sa_slr_2axes, sa_nls, sa_nls_2axes,

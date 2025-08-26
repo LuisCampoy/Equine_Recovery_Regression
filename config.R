@@ -1,10 +1,11 @@
 # Recovery Score Long Term Study. Cofiguration module
 # Description: Configuration settings for the analysis script
 # Script started: 5/21/2025
-# Last revised: 8/20/2025
+# Last revised: 8/25/2025
 
 # Filepath to the ODS file containing the datasets
 filepath <- "DataSet_Regression.ods"
+filepath_gwet <- "DataSet_cgs_long_term.ods"
 
 # Significance level and power for statistical tests
 alpha <- 0.05
